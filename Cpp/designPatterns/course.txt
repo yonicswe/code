@@ -1,0 +1,31 @@
+   
+
+   ●  uml - unified modeling learning.  
+      ▶  class diagram  
+         describes the static look of the designs but are not usefull to describe the process.
+
+         the other uml diagram are better in describing the process.
+
+
+
+   ●  dependecy has direction and a level 
+      direction says who depends on who 
+      and the level tells how depended is it 
+
+
+   ●  Difference between aggregation and composition.
+      ▶  they are both associations.
+      ▶  the relation between customer and bank 
+         ◾  a bank can have 1 or more customers.
+            so a customer is aggregated in the bank    
+
+         ◾  if the life cycle of a cusomter stems from the life cycle of the
+            bank then the customer is composite in the bank 
+            the life of a customer would depend on the bank's if its
+            intantiated on the bank's class 
+            or if there is a pointer to the customer that is allocted and
+            deleted by the bank.
+       
+      
+       
+   

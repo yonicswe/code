@@ -1,0 +1,26 @@
+
+explicitly instantiate template classes is only useful if you know beforehand what types the template parameters may assume. 
+You instantiate the template with all these types in the library.
+
+For your example to compile, just add the following to the end of shared.cpp:
+
+// Instantiate myclass for the supported template type parameters
+template class myclass<int>;
+template class myclass<long>;
+
+This instantiates the template with Type=int and places the instantiated code in 
+the shared library. Add as many explicit instantiations as you need, for all the types you need.
+
+If you want to be able to instantiate the template with any arbitrary Type parameter, 
+then you !!!must!!! add the definitions to the header file, so that the compiler knows the 
+source code of the template when instantiating it in other compilation units.
+
+=====================================
+You need to include the implementation of the template classes in the header files as well. 
+This is a constraint of templates in C++. 
+So either include shared.cpp from main (#include ) or just move the code from shared.cpp in shared.h
+=====================================
+The compiler has to see all the code for a template, so it can generate the 
+appropriate code for the actual type you want to use. So you should place all the code in your .h. file.
+=====================================
+

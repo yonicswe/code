@@ -1,0 +1,1 @@
+(sctp.port>2904 && sctp.port<2909) || (sctp.port  4321) || (sctp.port  5513) || (sctp.port  8001) || (sctp.port  9899) || (sctp.port  14001)

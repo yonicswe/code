@@ -1,0 +1,46 @@
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+error: passing xxx as 'this' argument of xxx discards qualifiers
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+usually somthing to do with const.
+calling a non-const member function on const object which is not allowed
+because non-const member functions make NO PROMISE not to modify the object;
+so the compiler is going to make a safe assumption that the called function() might attempt
+to modify the object but at the same time, it also notices that the object is
+const; so any attempt to modify the const object should be an error. Hence
+compiler generates error message. 
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Jump to case label.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+The problem is that variables declared in one case are still visible in the
+subsequent cases unless an explicit { } block is used, but they will not be
+initialized because the initialization code belongs to another case.
+
+In the following code, if foo equals 1, everything is ok, but if it equals 2,
+we'll accidentally use the i variable which does exist but probably contains
+garbage.
+
+   switch(foo) {
+      case 1:
+         int i = 42; // i exists all the way to the end of the switch
+         dostuff(i);
+         break;
+      case 2:
+         dostuff(i*2); // i is *also* in scope here, but is not initialized!
+   }
+
+solution would be by Wrapping the case in an explicit block solves the problem:
+
+   switch(foo) {
+      case 1:
+         {
+            int i = 42; // i only exists within the { }
+            dostuff(i);
+            break;
+         }
+      case 2:
+         dostuff(123); // Now you cannot use i accidentally
+   }
+

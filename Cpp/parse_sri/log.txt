@@ -1,0 +1,156 @@
+
+   ══════════════════════════════════════════════════════════════════════════════════
+    ___  ___  ___   ___                          
+   / __|| _ \|_ _| | _ \ __ _  _ _  ___ ___  _ _ 
+   \__ \|   / | |  |  _// _` || '_|(_-</ -_)| '_|
+   |___/|_|_\|___| |_|  \__,_||_|  /__/\___||_|  
+                                              
+   a dissect SRI from a pacp file using tshark capability to parse 
+   packets to xml format.
+   the purpose is to use it to resolve network duplications
+   with the advantage that it can output the frame numbers from the pacp 
+   and thus could be used to probe to the customer that infact those duplications 
+   are network fault and not the probe's  
+
+   ══════════════════════════════════════════════════════════════════════════════════
+
+   29/4/2013
+   ----------------
+   *  add tshark_pdml.sh option to filter one packet 
+      or write a new tshark_pdml.sh 
+
+
+   filtered the pcap /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap
+   with 
+      (sctp.port>2904 && sctp.port<2909) || (sctp.port  4321) || (sctp.port  5513) || (sctp.port  8001) || (sctp.port  9899) || (sctp.port  14001)
+
+   in packet 68 found a request and in packet 230 the response       
+
+   invoke 
+      ./parser -r /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap -c 300
+
+   to get both packets      
+
+   frame 68 was received 
+   ══════════════════════════════════════
+      sri request
+         frame          : 68
+         sccp_oa        : 998970000019
+         sccp_da        : 998667171765
+         tcap.bna       : 1
+         tcap.src_tid   : 2866ff54
+         tcap.dst_tid   : 0
+         gsm.type       : 45
+         gsm_map.msisdn : 91996876717156
+         gsm_map.imsi   : 0
+   ══════════════════════════════════════
+
+   but when frame 230 is received there is no match 
+   ══════════════════════════════════════
+      request not found
+         frame          : 230
+         sccp_oa        : 998970000100
+         sccp_da        : 998970000019
+         tcap.bna       : 0
+         tcap.src_tid   : 0
+         tcap.dst_tid   : 2866ff54
+         gsm.type       : 45
+         gsm_map.msisdn : 0
+         gsm_map.imsi   : 34040712279736f1 
+   ══════════════════════════════════════
+
+   place a breakpoint in handle_sri_response() 
+   conditional frame_number == 230
+
+   frame 68 placed in bucket 485
+
+   its because i sent tcap.src_tid in handle_sri_response() 
+   when called sri_hash->get(tcap.src_tid, sccp.sccp_da)
+   intead of calling sri_hash->get(tcap.src_tid, sccp.sccp_da)
+
+   now the there is a problem when calling delete sri_desc 
+   apperantly list.erase() already deletes the sri_desc 
+
+   created some code to access a data base and tested
+   i will need to create the database with the system call 
+
+   added to main() this code  
+   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+      create the dataabase file
+   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+      ifstream sri_db_file("sri.db");
+      if (0 != sri_db_file.good())
+      {
+         // delete the old sri.db
+         cout << "deleting old sri.db" << endl;
+         system("/bin/rm -f sri.db");
+      }
+
+      // create a new sri.db file
+      cout << "Creating a new sri.db" << endl;
+      system("sqlite3 -line sri.db \"create table sri (tcapid,msisdn,imsi, constraint p primary key (msisdn, imsi))\"");
+   ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+   added code in : handle_sri_response() write to the database complete SRIs
+
+   complete SRI is written to sqlite db 
+   but when invoked parser with 
+      ./parser -r /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap -c 10000
+   got a core dump 
+
+   which happened from parse_gsm_map_proto() 
+   which called abort since tcap.begin_not_end was not set
+   this happened in packet 2748
+   ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+      {frame_number = 2748, response_frame_number = 25769803793, 
+       sccp = {sccp_oa = 79219900047, sccp_da = 998970000019, complete = 2}, 
+       tcap = {src_tid = 0, dst_tid = 0, begin_not_end = -1, complete = 2}, 
+       gsm_map = {type = 45, msisdn = 0, imsi = 0, complete = 1}}
+   ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+   because there was a tcap continue which i did not handle yet 
+   
+   several lines apper in the database with imsi = 0 
+   e.g. 
+      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+         f1          f2          tcapid      msisdn          imsi            
+         ----------  ----------  ----------  --------------  ----------------
+         744         1141        5a733314    91999853578525  0               
+      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+      packet 1141 had a gsm type absentSubscriber
+      apperantly the error was not handled and the descriptor was written to the db.
+
+      use the debugger to stop at handle_sri_response()
+
+
+
+
+   
+       _  _       _            
+      | \| | ___ | |_  ___  ___
+      | .` |/ _ \|  _|/ -_)(_-<
+      |_|\_|\___/ \__|\___|/__/
+                               
+   ●  to see the content of sri.db use the following sql query 
+         sqlite3 -column -header sri.db "select * from sri"
+      example 
+      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+         f1          f2          tcapid      msisdn          imsi            
+         ----------  ----------  ----------  --------------  ----------------
+         72          117         5a73331a    91999847421122  34040711639582f3
+         88          141         5a733332    91999837332525  34040711530811f4
+         99          144         3366feb8    91999877122088  34040711409276f0
+         73          167         6e1d5013    91999877438549  34040711860977f2
+         103         180         5a733302    91999877838735  34040711865568f3
+         87          192         6e1d5193    91996835505434  34040702525948f7
+         105         229         4766ff0a    91997824571077  34040713074635f8
+         68          230         2866ff54    91996876717156  34040712279736f1
+         111         251         5a73313a    91997879520220  34040702799900f1
+         169         265         4766fec1    91999877192029  34040711744305f7
+         185         284         3366fdc8    91996877508511  34040721056276f0
+         197         284         3c66fe2b    91996877204499  34040711430001f7
+         186         286         5b208c74    91999847459091  34040711615689f7
+         184         314         3366fe40    91996815094409  34040712120947f1 
+      ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+     

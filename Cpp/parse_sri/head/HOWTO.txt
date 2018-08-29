@@ -1,0 +1,37 @@
+
+   invocation example : 
+   ==========================
+      ./parse_sri /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap
+
+   invocation of tshark_pdml.sh to produce an xml file from a pcap file.      
+   =====================================================================
+      ./tshark_pdml.sh -r /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap
+
+   to limit the number of packets to read from the pcap use -c like so 
+
+      ./tshark_pdml.sh -c 20  -r /journal/pcap/SMS/duplicate_imsi/mts_6.2_eth4_IMSI_MSISDN.pcap
+
+   find duplications in sri.db using sqlite quries
+   ==============================================
+   the following prints MSISDNs with more than one IMSI and a count of those IMSIs
+   ------------------------------------------------------------------------------
+   sqlite3 -column sri.db "select msisdn, count(*) from sri group by msisdn having count(*) > 1"
+
+   the following print duplicated MSISDN and their respected IMSIs
+   ----------------------------------------------------------------  
+   sqlite3 -column sri.db "select msisdn, imsi from sri where exists (select msisdn from sri as a where sri.msisdn = a.msisdn group by msisdn having count(*) > 1) order by 1,2" 
+
+   the following prints the number of duplicated MSISDN
+   ------------------------------------------------------
+   sqlite3 -column sri.db "select count(*) from (select msisdn, count(*) from sri group by msisdn having count(*) > 1) sub"
+
+
+   TODO
+   ======
+   o  add assert for meeting end of proto field "/proto>"       
+      before section (sccp, tcap, gsm) is completed.
+
+   o        
+
+
+
