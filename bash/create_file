@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# 
+# using dd you can 
+#
+# to create a 10G file filled with zeros
+#                                                
+# dd if=/dev/zero of=file_10G bs=64k count=(( (10 *1024*1024*1024)/(64*1024) ))
+#                                              ^
+#                                              10G 
+#
+file_name=${1}
+file_size=${2}
+
+if (( $# != 2 )) ; then 
+   echo "usage : create_file <file_name> <file_size>"
+   exit
+fi 
+
+size_in_kilos=$(echo ${file_size} | awk '/.*[k,K]$/ {print $0}' | wc -l )
+if (( ${size_in_kilos} > 0 )) ; then 
+    size=$(echo ${file_size} | sed 's/[k,K]$//g') 
+    (( size = size * 1024 )) 
+    dd_block_size=1k
+    dd_block_size_divisor=1024
+fi 
+
+size_in_megs=$(echo ${file_size} | awk '/.*[m,M]$/ {print $0}' | wc -l )
+if (( ${size_in_megs} > 0 )) ; then 
+    size=$(echo ${file_size} | sed 's/[m,M]$//g') 
+    (( size = size * 1024 * 1024 )) 
+    dd_block_size=64k
+     (( dd_block_size_divisor=64*1024 ))
+fi 
+
+size_in_gigs=$(echo ${file_size} | awk '/.*[g,G]$/ {print $0}' | wc -l) 
+if (( ${size_in_gigs} > 0 )) ; then 
+    size=$(echo ${file_size} | sed 's/[g,G]$//g') 
+    (( size = size * 1024 * 1024 * 1024 )) 
+    dd_block_size=64k
+    (( dd_block_size_divisor=64*1024 )) 
+fi 
+
+# echo size=${size}
+
+echo "dd if=/dev/zero of=${file_name}_${file_size} bs=${dd_block_size} count=$(( $size/${dd_block_size_divisor} ))"
+dd if=/dev/zero of=${file_name}_${file_size} bs=${dd_block_size} count=$(( $size/${dd_block_size_divisor} ))
+
+
+
+#
+# and even faster using the seek feature of dd.
+# dd if=/dev/zero of=file_1000k bs=1k count=0 seek=$(((1024*1024*10)))
+#
+#
+#
+

@@ -1,0 +1,10 @@
+
+
+YONI_START
+
+	goodbye
+
+YONI_END
+
+
+hello

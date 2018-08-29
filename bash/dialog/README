@@ -1,0 +1,93 @@
+
+ ___   _        _            
+|   \ (_) __ _ | | ___  __ _ 
+| |) || |/ _` || |/ _ \/ _` |
+|___/ |_|\__,_||_|\___/\__, |
+                       |___/ 
+
+
+Dialog is very easy to use. If you've got your keyboard handy, here's a one-line example of a message box you can try. 
+(Note: The examples in this article assume you are running a Bourne-compatible shell program such as GNU bash.)
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+	 dialog --title 'Message' --msgbox 'Hello, world!' 5 20
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+
+This example creates a message box with the title “Message”, containing the greeting “Hello, world!”. 
+The box is 5 lines high and 20 characters wide, with the message nicely centered in the box. 
+An “OK” button appears at the bottom; pressing <enter> dismisses the menu.
+
+Dialog Box Types
+═════════════════ 
+Most calls to dialog are in a similar format: 
+an optional title, the dialog type, the text to be displayed, and the height and width (in characters) 
+of the dialog box. Additional parameters specific to each menu type follow. Let's have a brief look at each of the available types.
+
+The “yesno” menu is very similar to our first example:
+════════════════════════════════════════════════════ 
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+	 dialog --title "Message"  --yesno "Are you having\ fun?" 6 25
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+
+you will see that there are now two buttons at the bottom, labeled “Yes” and “No”. 
+You can select between the buttons using the cursor keys (or <tab>) and make your 	
+selection by pressing <enter>. The exit status returned to the shell will be 0 if “Yes” is chosen and 1 if a “No” selection is made.  
+You may wish to try experimenting with the height and width parameters. 
+If the width is less than the string length, the string is wrapped around (at word boundaries). 
+If you make the dialog box too small, then characters will be lost.
+
+The “infobox” 
+════════════════════════════════════════════════════ 
+is similar except that it does not wait for the user to select an “OK” button. 
+This is useful for displaying a message while an operation is going on. 
+Here is an example: 
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+	 dialog --infobox "Please wait" 10 30 ; sleep 4
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ 
+
+The “inputbox” allows a user to enter a string. The usual editing keys can be used, and the text field scrolls if necessary. After the user enters the data, it is written to standard error (or more commonly redirected to a file as in this example):
+
+% dialog --inputbox "Enter your name:" 8 40 2>answer
+
+The “textbox” type is a simple file viewer; it takes a filename as a parameter:
+
+% dialog --textbox /etc/profile 22 70
+
+The usual movement keys work here: the cursor keys, Page Up, Page Down, Home, etc. You can exit by pressing <esc> or <enter>.
+
+The “menu” type 
+════════════════════════════════════════════════════ 
+allows creating a menu of choices from which the user can choose. The format is
+
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+        % dialog --menu <text> <height> <width>
+        <menu-height> [<tag><item>]
+	⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+Each menu entry consists of a “tag” string and an associated “item” string, both of which are displayed. The user can make a choice using the cursor keys and pressing <enter>. The selected tag is written to standard error. Here is a simple example:
+
+% dialog --menu "Choose one:" 10 30 3 1 red 2 green 3 blue
+
+the “checklist”. 
+════════════════════════════════════════════════════ 
+The user is presented with a list of choices and can toggle each one on or off individually using the space bar:
+
+% dialog --checklist "Choose toppings:" 10 40 3 \
+        1 Cheese on \
+        2 "Tomato Sauce" on \
+        3 Anchovies off
+
+The third field in each choice is the initial state; -either “on” or “off”. 
+
+
+the “radiolist”
+════════════════════════════════════════════════════ 
+essentially the same as the checklist except that the user must make one choice from a list of mutually exclusive options. 
+The radiolist type, and the alternate form of title show here, were introduced in version 0.4 of dialog.
+
+% dialog --backtitle "CPU Selection" \
+  --radiolist "Select CPU type:" 10 40 4 \
+        1 386SX off \
+        2 386DX on \
+        3 486SX off \
+        4 486DX off
+

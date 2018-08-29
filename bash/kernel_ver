@@ -1,0 +1,10 @@
+#!/bin/bash
+UTS_RELEASE=$( grep UTS_RELEASE /usr/src/linux/include/linux/version.h | cut -f3 -d" ")
+KERNEL=$( echo ${UTS_RELEASE} | cut -d- -f1)
+KMAJOR=$( echo ${KERNEL} | cut -d. -f1)
+KMINOR=$( echo ${KERNEL} | cut -d. -f2)
+KMINIMINOR=$( echo ${KERNEL} | cut -d. -f3)
+KMAJOR_MINOR=${KMAJOR}.${KMINOR}
+
+echo KERNEL KMAJOR KMINOR KMINIMINOR KMAJOR_MINOR
+echo $KERNEL $KMAJOR $KMINOR $KMINIMINOR $KMAJOR_MINOR

@@ -1,0 +1,43 @@
+#!/bin/bash
+############################################################################
+# 
+#  make sure that /dev/dump is infact a link to a block partition.
+# 
+############################################################################
+
+DUMP_DEVICE=/dev/dump
+DUMP_BLOCK=/dev/hda3
+
+DATE=`date +%Y%m%d%H%M%S`
+DUMPDIR=/var/log
+DUMPFILE=${DUMPDIR}/${DATE}.dump
+DUMPER_APP=/opt/allot/bin/dumper
+
+# MAPSFILE=${DUMPDIR}/${DATE}.maps
+# OOPSFILE=${DUMPDIR}/${DATE}.oops
+############################################################################ 
+# 
+# Main 
+# 
+############################################################################ 
+if ! [ -b $DUMP_DEVICE ] ; then 
+	echo -e "$DUMP_DEVICE block device not found\nNo Crash dump"
+	exit 1
+fi
+
+# make sure that DUMP_DEVICE points to the correct partition
+ln -snf $DUMP_BLOCK $DUMP_DEVICE
+
+# Read kernel crash dump from dump device
+if [ -x /usr/local/SWG/bin/dumper ]; then        
+  /opt/allot/bin/dumper
+fi
+
+# Save and analyze kernel crash dump if exists
+if [ -s /tmp/dump.log ]; then
+  [ ! -d $DUMPDIR ] && mkdir -p $DUMPDIR
+  mv /tmp/dump.log  $DUMPFILE
+fi
+
+# prepare for the next crash_dump
+modprobe lkcd

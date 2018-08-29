@@ -1,0 +1,10 @@
+<eid>
+       <identity nationalnumber="13021912354" dateofbirth="20130219" gender="male">
+          <name>Menten</name>
+          <firstname>Kasper</firstname>
+          <middlenames>Marie J</middlenames>
+          <nationality>Belg</nationality>
+          <placeofbirth>Sint-Truiden</placeofbirth>
+          <photo>base64-string</photo>
+       </identity>
+    </eid>

@@ -1,0 +1,56 @@
+Serial:[3600c0ff00000000007c1d167985b4b00] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:0 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:0 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b01] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:1 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:1 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b02] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:2 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:2 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b03] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:3 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:3 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b04] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:4 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:4 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b05] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:5 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:5 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+
+Serial:[3600c0ff00000000007c1d167985b4b06] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:20479MB
++- path minor:6 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:6 state:ACTIVE, cnt.src:1
+dst:1
+|
++- session:c70e6040, tasks rdy:0 sbm:0 cpl:0 fld:0 abt:0, path minor:6 pref:6
+
+Serial:[3600c0ff00000000007c1d167985b4b07] WWNN:[20:60:00:C0:FF:07:C1:D1]
+Vendor:[DotHill] Model:[SANnet II FC] size:28764MB
++- path minor:7 wwpn:[21:60:00:C0:FF:87:C1:D1] 0:0:0:7 state:ACTIVE, cnt.src:1
+dst:1
+|
++- no sessions
+

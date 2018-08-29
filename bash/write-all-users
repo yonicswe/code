@@ -1,0 +1,33 @@
+#!/bin/bash 
+
+ttyname=`tty`
+
+function write_message() {
+
+write ${1} <<eof
+${2}
+eof
+}
+
+#Main
+x=$(who |awk '{print $1,$2}' |grep pts |sed 's/ /-/'|xargs)
+
+for i in $x ; do 
+	
+	a=$(echo "$i" | sed 's/-/ /')  
+	dsttty=`echo "$a" | awk '{print $2}'`
+	dst_user=`echo "$a" | awk '{print $1}'`
+	if [ "$ttyname" = "/dev/$dsttty" ] ; then 
+		echo not sending message to $dsttty
+		continue
+	fi
+	
+	write_message "$dst_user /dev/$dsttty" "${1}"
+done
+
+
+
+
+
+
+

@@ -1,0 +1,76 @@
+--- iser_ptl.c.orig	2006-10-17 12:04:49.000000000 +0200
++++ iser_ptl.c	2006-10-17 12:05:48.000000000 +0200
+@@ -399,7 +399,7 @@ iser_ptl_delete_connection_list(struct l
+         ptl_conn_p = list_entry(conn_to_delete,
+                                 struct iser_ptl_conn_t,
+                                 conn_list);
+-		iser_ptl_delete_connection(ptl_conn_p);        
++		iser_ptl_delete_connection(ptl_conn_p);
+ 	}
+     spin_unlock(&iser_ptl_global.conn_list_lock);
+ 
+@@ -429,7 +429,7 @@ iser_ptl_delete_connection(struct iser_p
+     if (delayed_pdu != NULL) {
+         ptl_conn_p->delayed_pdu = NULL;
+         iser_ret = iser_ptl_global.iser_api.release_control(ptl_conn_p,
+-                                                            delayed_pdu);        
++                                                            delayed_pdu);
+         if (iser_ret != ISER_SUCCESS) {
+             VD_LOG(VDLOG_ERROR,
+                    "%s: Failed release_control for delayed pdu:0x%p (%u)\n",
+@@ -463,7 +463,7 @@ iser_ptl_delete_connection(struct iser_p
+            __func__, ptl_conn_p, iser_ptl_global.conn_list_size);
+     spin_unlock(&iser_ptl_global.conn_list_lock);
+ 
+-    kmem_cache_free(iser_ptl_global.conn_slab, ptl_conn_p);    
++    kmem_cache_free(iser_ptl_global.conn_slab, ptl_conn_p);
+ 
+  exit_delete_connection:
+     EXIT_LOG;
+@@ -598,7 +598,7 @@ release_iser_pdus_from_task(struct iser_
+             VD_LOG(VDLOG_ERROR,"%s: failed release_control task=0x%p pdu=0x%p\n",
+                    __func__, ptl_task_p, p_ctrl_pdu);
+             return FALSE;
+-        }        
++        }
+     }
+ 
+     spin_unlock(&ptl_task_p->task_lock);
+@@ -684,7 +684,7 @@ vISERStopPTLLayer(void)
+     ENTER_LOG;
+ 
+     if (iser_ptl_global.iser_ptl_state != ISER_PTL_STOPPED) {
+-        
++
+         iser_ptl_delete_connection_list(&iser_ptl_global.conn_list_head);
+ 
+         iser_ret = iser_api_unregister(iser_ptl_global.api_h);
+@@ -746,8 +746,8 @@ iser_ptl_remove_conn(ptl_conn_handle_t c
+         break;
+ 
+     case ISER_PTL_DISCONNECT:
+-    case ISER_PTL_FAILED:       
+-        spin_lock(&iser_ptl_global.conn_list_lock); 
++    case ISER_PTL_FAILED:
++        spin_lock(&iser_ptl_global.conn_list_lock);
+         iser_ptl_delete_connection(ptl_conn_p);
+         spin_unlock(&iser_ptl_global.conn_list_lock);
+         break;
+@@ -2129,7 +2129,7 @@ iser_ptl_connection_establish_notify(ise
+     if (!established) {
+         VD_LOG(VDLOG_ERROR,
+                "%s: Failed to establish conn:0x%p, changing to FAILED\n",
+-               __func__, ptl_conn_p);        
++               __func__, ptl_conn_p);
+         goto connection_establish_failed;
+     }
+ 
+@@ -2163,7 +2163,7 @@ connection_establish_failed:
+         ITRACE(TRACE_ISER_PTL_GEN, "%s: Release delayed ctrl pdu:0x%p on conn:0x%p\n",
+                __func__, delayed_pdu, ptl_conn_p);
+         iser_ret = iser_ptl_global.iser_api.release_control(ptl_conn_p,
+-                                                            delayed_pdu);        
++                                                            delayed_pdu);
+         if (iser_ret != ISER_SUCCESS) {
+             VD_LOG(VDLOG_ERROR,
+                    "%s: Failed release_control for delayed pdu:0x%p (%u)\n",

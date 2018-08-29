@@ -1,0 +1,69 @@
+
+   to find all the files that are older than X days use the -mtime option 
+
+   for i in $(seq 1 12) ; do touch day_file_$i -d "Jul $i" ; done
+   created these files 
+   ______________________________________________________________________________
+      total 0
+      -rw-r--r--. 1 yonic yonic 0 Jul  1 00:00 day_file_1
+      -rw-r--r--. 1 yonic yonic 0 Jul  2 00:00 day_file_2
+      -rw-r--r--. 1 yonic yonic 0 Jul  3 00:00 day_file_3
+      -rw-r--r--. 1 yonic yonic 0 Jul  4 00:00 day_file_4
+      -rw-r--r--. 1 yonic yonic 0 Jul  5 00:00 day_file_5
+      -rw-r--r--. 1 yonic yonic 0 Jul  6 00:00 day_file_6
+      -rw-r--r--. 1 yonic yonic 0 Jul  7 00:00 day_file_7
+      -rw-r--r--. 1 yonic yonic 0 Jul  8 00:00 day_file_8
+      -rw-r--r--. 1 yonic yonic 0 Jul  9 00:00 day_file_9
+      -rw-r--r--. 1 yonic yonic 0 Jul 10 00:00 day_file_10
+      -rw-r--r--. 1 yonic yonic 0 Jul 11 00:00 day_file_11
+      -rw-r--r--. 1 yonic yonic 0 Jul 12 00:00 day_file_12
+   ______________________________________________________________________________
+      
+   the day today is 
+   ______________________________________________________________________________
+      (yonic) dana-work-dev:/find=> date
+      Thu Aug  2 17:10:35 IDT 2012
+   ______________________________________________________________________________
+
+   lets use find to show only files that are older than 20 days 
+
+   ______________________________________________________________________________
+      (yonic) dana-work-dev:/find=> !1047
+      find -mtime +20
+      ./day_file_6
+      ./day_file_12
+      ./day_file_9
+      ./day_file_1
+      ./day_file_5
+      ./day_file_4
+      ./day_file_10
+      ./day_file_2
+      ./day_file_11
+      ./day_file_8
+      ./day_file_3
+      ./day_file_7
+      (yonic) dana-work-dev:/find=> find -mtime +20 | wc -l 
+      12 
+   ______________________________________________________________________________
+      
+   see that it found all 12 files       
+
+   now lets tell file to locate all files older than 21 days
+   ______________________________________________________________________________
+      (yonic) dana-work-dev:/find=> find -mtime +21         
+      ./day_file_6
+      ./day_file_9
+      ./day_file_1
+      ./day_file_5
+      ./day_file_4
+      ./day_file_10
+      ./day_file_2
+      ./day_file_11
+      ./day_file_8
+      ./day_file_3
+      ./day_file_7
+      (yonic) dana-work-dev:/find=> find -mtime +21 | wc -l 
+      11 
+   ______________________________________________________________________________
+
+   you see now that day_file_12 is missing because its newer 

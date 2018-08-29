@@ -1,0 +1,7 @@
+#!/usr/bin/perl -w
+param=$1
+$TT=localtime($param);
+
+print qq { $TT \n};
+
+exit{}; 

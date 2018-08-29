@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for i in * ; do 
+	if [ $(file $i |grep executable | wc -l) -gt 0 ] ; then 
+		rm $i ; 
+	fi  ; 
+done
+
+
+# another way to do this
+#find . |xargs file |grep executable|cut -d' ' -f1|cut -d':' -f1 |xargs rm

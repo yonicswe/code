@@ -1,0 +1,51 @@
+#!/bin/bash
+__cddocs_complete () 
+{
+	local cur_word prev_word type_list
+
+    cur_word="${COMP_WORDS[COMP_CWORD]}"
+    prev_word="${COMP_WORDS[COMP_CWORD-1]}"
+    echo "cur: $cur_word"
+    echo "prev: $cur_word"
+
+    COMPREPLY=( $(compgen -W "$(ls ~/share/docs/)" -- ${cur_word}) )
+
+
+    return 0
+
+}
+
+complete -o nospace -F __cddocs_complete cddocs
+
+
+
+# __pull ()
+# {
+#     FILE_EXCHANGE_DIR=~/share/docs
+# 
+#     IFS=$'\n' tmp=( $(compgen -W "$(ls "$FILE_EXCHANGE_DIR")" -- "${COMP_WORDS[$COMP_CWORD]}" ))
+#     COMPREPLY=( "${tmp[@]// /\ }" )
+# }
+
+
+_pull () 
+{
+    local word=${COMP_WORDS[COMP_CWORD]};
+    local line=${COMP_LINE};
+    local pat="~/share/docs/*"
+
+    echo $word
+    echo $line
+    echo
+
+    COMPREPLY=($(compgen -W "ls $pat" -- "$pat/${word}"));
+
+#     i=0
+#     for item in "${COMPREPLY[@]}"; do
+#         COMPREPLY[$i]="${item##*/}"
+#         i+=1
+#     done;
+    return 0;
+}
+
+complete -o default -F _pull cddocs

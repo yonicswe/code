@@ -1,0 +1,27 @@
+<WebEngine>
+
+   <Provisioning>
+     <Protocols>
+       <Root> /etc/nice/ips/wbein/ </Root>
+       <!--Note: at the moment we have two protocol folders. the protocol name is correlated to the code
+    Don't change it! the folder path can be changed.-->
+  <Protocol>
+   <Name> HTTP </Name>
+       <Folder>http</Folder>
+      </Protocol>
+      <Protocol>
+   <Name>NNTP</Name>
+       <Folder>nntp</Folder>
+      </Protocol> 
+     </Protocols>
+  <FilesExtension> wbe      </FilesExtension>  
+ </Provisioning> 
+    <ExportersList>
+        <DebugExporter> 1  </DebugExporter>
+        <DfmExporter>   1  </DfmExporter>
+        <IpdrExporter>  0  </IpdrExporter>
+    </ExportersList>
+
+    <TopLevelDomainsFile> /etc/nice/ips/top_level_domains.txt </TopLevelDomainsFile>
+    <DateFormatsTemplate> /etc/nice/ips/date_templates.txt </DateFormatsTemplate>
+</WebEngine>

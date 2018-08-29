@@ -1,0 +1,10 @@
+#!/bin/bash
+
+dbg_lvl=${1:-0}
+
+
+if (($dbg_lvl == 0 )) ; then 
+	dbg_lvl=start
+fi
+
+echo iscsi $dbg_lvl

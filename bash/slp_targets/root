@@ -1,0 +1,83 @@
+#!/bin/bash
+
+lunmasks_src=lunmasks.dat # replace with /proc/voltaire/itarget/lunmasks
+luns_src=luns.dat # replace with /proc/voltaire/scsimap/lu/*
+
+
+declare -a slp_targets
+declare -a slp_initiators
+arr_size=0
+
+add_target () {
+	
+	tgt_name=$1
+	initiator_name=$2	
+	found=""
+	slp_str="auth-name="
+
+	
+	# for 1st element
+	if (( $arr_size == 0 )) ; then 
+		slp_targets[0]=$tgt_name
+		slp_initiators[0]=${slp_str}${initiator_name}
+		let arr_size++
+		return
+	fi
+
+	# find target index 
+	for (( i=0 ; i<$arr_size ; i++ )) ; do 
+		if [ "${slp_targets[$i]}" == "${tgt_name}" ] ; then 
+			found=$tgt_name
+			break
+		fi
+	done 
+
+	if  [  -z  $found ] ; then 
+		slp_targets[$i]=$tgt_name
+		slp_initiators[$i]=${slp_str}${initiator_name}
+		let arr_size++
+	else
+		slp_initiators[$i]=${slp_initiators[$i]},${slp_str}${initiator_name}
+		sort_uniqe=$(echo ${slp_initiators[$i]}|sed 's/\,/\n/g' |sort -u | xargs | sed 's/ /,/g')
+		slp_initiators[$i]=$sort_uniqe
+	fi
+}
+
+populate_slp_tgts () {
+while read lunmask ; do 
+	if [ "$lunmask" == "Lunmasks:" ]  ||  [ "$lunmask" == ""  ]  ; then 
+		continue
+	fi
+
+	lu=$(echo $lunmask|awk '{print $3}')
+	initiator_name=$(echo $lunmask|awk '{print $1}')
+	tgt_line=$(grep $lu $luns_src)
+	tgt="iqn.2005-12.com.voltaire."$(echo $tgt_line |awk '{print $2}'|sed -e 's/.*\[//'|sed 's/\]//'|sed 's/://g'  ) 
+	add_target $tgt $initiator_name
+done <${lunmasks_src}
+
+}
+
+main () {
+
+	populate_slp_tgts
+
+	for (( i=0; i<$arr_size ; i++ )) ; do 
+		echo -n "${slp_targets[$i]} =  "
+		init_list=$(echo ${slp_initiators[$i]} |sed 's/,/)(/g' )
+		echo "($init_list)"
+	done 
+}
+
+main
+
+# add_target tgt1 init1
+# add_target tgt1 init2
+# add_target tgt1 init3
+# add_target tgt2 init1
+# add_target tgt3 init1
+# add_target tgt3 init4
+# add_target tgt3 init4
+# add_target tgt3 init6
+# add_target tgt1 init5
+

@@ -1,0 +1,2 @@
+#!
+for i in $(find . -name "*.[c,h]" -type f) ; do  j=$(2>/dev/null cvs stat $i |grep -i "sticky tag:") ; x=$(echo $i | sed 's/\.\///') ; echo -ne  "File: $x\t\t" ; a=$(echo $j | awk '{print $3}') ; echo Tag: ${a} ; done

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#cmp return values : 
+#		0 - files match
+#		1 - files dont match
+#		2 - file does not exist in the destination directory.
+
+src_dir=${1}
+dst_dir=${2}
+
+if [ -z $src_dir ] ; then 
+   exit
+fi
+
+if ! [ -d $src_dir ] ; then 
+   exit
+fi
+
+if [ -z $dst_dir ] ; then 
+   exit
+fi
+
+if ! [ -d $src_dir ] ; then 
+   exit
+fi
+
+pushd $src_dir 2>/dev/null 1>/dev/null
+src_files=( $(find . -type f) )
+popd
+
+
+count=${#src_files[*]}
+
+pushd $dst_dir 2>/dev/null 1>/dev/null 
+
+for (( index=0 ; index < count ; index++ )) ; do 
+   dest_dir=$(echo ${src_files[$index]} | sed 's/^\.\///')
+
+   ls $dest_dir 2>/dev/null
+   ret=$?
+
+   if (( $ret != 0 )) ; then 
+      echo "$dest_dir not found in $dst_dir"
+      exit
+   fi 
+done
+
+popd

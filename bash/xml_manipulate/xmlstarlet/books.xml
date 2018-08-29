@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<bookstore>
+
+	<book xsi:type='1'>
+	  <title lang="eng">Harry Potter </title>
+	  <price> 29.99 </price>
+	</book>
+
+	<book xsi:type='2'>
+	  <title lang="eng">Learning XML</title>
+	  <price>39.95</price>
+	</book>
+
+	<book xsi:type='3'>
+	  <title lang="heb">kidon</title>
+	  <price>39.95</price>
+	</book>
+
+</bookstore>

@@ -1,0 +1,12 @@
+#!/bin/bash
+#watch -d -n2 ps -Fp $( ps auxww|grep scsi |awk '!/grep/&&!/awk/&&/\[scsi.*/ {print $0}'  | awk '{print $2}' | xargs | sed 's/ /,/g' )
+
+while (( 1 )) ; do 
+a=$( ps auxww|grep scsi |awk '!/grep/&&!/awk/&&/\[scsi.*/ {print $0}'  | awk '{print $2}' | xargs | sed 's/ /,/g' )
+ps -Fp $a
+sleep 1
+echo ; echo
+done
+
+
+  

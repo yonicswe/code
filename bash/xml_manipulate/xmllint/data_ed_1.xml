@@ -1,0 +1,6 @@
+<software>
+   <settings>
+       <setting name="local directory" type="string">/home/username/</setting>
+       <name > yoni </name>
+   </settings>
+</software>

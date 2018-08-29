@@ -1,0 +1,179 @@
+#!/bin/bash
+#umclient str REP__VOLTAIRE_ITARGET_TABLE_INITIATORS,1,0 get
+
+valid_col=0
+
+######################################
+# Initiators
+######################################
+init_name_col=1
+init_nickname_col=7
+init_names_arr=(  iqn.virgo1       
+		   iqn.virgo2      
+		   iqn.virgo3      
+		   iqn.virgo4      
+		   iqn.virgo5      
+		   iqn.virgo6      
+		   iqn.virgo7      
+		   iqn.virgo8      
+		   iqn.virgo9      
+		   iqn.nestor0     
+		   iqn.nestor1     
+		   iqn.nestor2     
+		   iqn.nestor3     
+		   iqn.nestor5     
+		   iqn.nestor6     
+		   iqn.nestor7     
+		   iqn.nestor8     
+		   iqn.nestor9     
+		   iqn.nestor10    
+		   iqn.nestor11    
+		   iqn.nestor12    
+		   iqn.nestor13    
+		   iqn.nestor14    
+		   iqn.nestor15    
+		   iqn.vacuum1     
+		   iqn.vacuum2     
+		   iqn.vacuum3     
+		   iqn.vacuum4     
+		   iqn.vacuum5     
+		   iqn.vacuum6     
+		   iqn.vacuum7     
+		   iqn.vacuum8     
+		   iqn.vacuum9     
+		   iqn.vacuum10    
+		   iqn.vacuum11    
+		   iqn.vacuum12    
+		   iqn.vacuum13    
+		   iqn.vacuum14    
+		   iqn.vacuum15    
+		   iqn.vacuum16    
+		   iqn.vacuum17    
+		   iqn.vacuum18    
+		   iqn.vacuum19    
+		   iqn.vacuum20    
+		   iqn.omni1       
+		   iqn.omni2       
+		   iqn.omni3       
+		   iqn.omni4       
+		   iqn.omni5       
+		   iqn.omni6       
+		   iqn.omni7       
+		   iqn.omni8       
+		   iqn.omni10      
+		   iqn.omni11      
+		   iqn.omni12  )
+
+init_nicks_arr=(  v1          
+		   v2         
+		   v3         
+		   v4         
+		   v5         
+		   v6         
+		   v7         
+		   v8         
+		   v9         
+		   nes0       
+		   nes1       
+		   nes2       
+		   nes3       
+		   nes5       
+		   nes6       
+		   nes7       
+		   nes8       
+		   nes9       
+		   nes10      
+		   nes11      
+		   nes12      
+		   nes13      
+		   nes14      
+		   nes15      
+		   vac1       
+		   vac2       
+		   vac3       
+		   vac4       
+		   vac5       
+		   vac6       
+		   vac7       
+		   vac8       
+		   vac9       
+		   vac10      
+		   vac11      
+		   vac12      
+		   vac13      
+		   vac14      
+		   vac15      
+		   vac16      
+		   vac17      
+		   vac18      
+		   vac19      
+		   vac20      
+		   o1         
+		   o2         
+		   o3         
+		   o4         
+		   o5         
+		   o6         
+		   o7         
+		   o8         
+		   o10        
+		   o11        
+		   o12 )
+
+######################################
+# LunMasks
+######################################
+lun_initid_col=1
+lun_serial_col=3
+
+lun_initid_arr=()
+lun_serial_arr=()
+
+initiator_rows=${#init_names_arr[*]}
+
+for (( row=0; row < initiator_rows; row++)) ; do 
+	# setup initiators table.
+	umclient int REP__VOLTAIRE_ITARGET_TABLE_INITIATORS,${valid_col},${row} set 1 
+	umclient str REP__VOLTAIRE_ITARGET_TABLE_INITIATORS,${init_name_col},${row} set ${init_names_arr[${row}]}
+	umclient str REP__VOLTAIRE_ITARGET_TABLE_INITIATORS,${init_nickname_col},${row} set ${init_nicks_arr[${row}]}
+done
+# set -x
+lunmasks_rows=${#lun_initid_arr[*]}
+
+umclient int REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,-1,-1 get
+
+echo "About to configure ${lunmasks_rows} rows into LunmaskTable"
+
+for (( row=0; row < lunmasks_rows; row++)) ; do 
+	# setup lunmasks table.
+	umclient int REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,0,$row create $row
+	umclient int REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,${valid_col},${row} set 1 
+	umclient int REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,${lun_initid_col},${row} set ${lun_initid_arr[${row}]} 
+	umclient str REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,${lun_serial_col},${row} set ${lun_serial_arr[${row}]} 
+done
+
+# set +x
+	
+umclient int REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS,-1,-1 get
+
+umclient flush	
+
+# REP__VOLTAIRE_ITARGET_TABLE_INITIATORS
+#int initiatorEntrySyntaxList[]={
+#	synaINT32,	    //valid
+#	synaOCTETSTR,	//name
+#	synaOCTETSTR,	//user
+#	synaOCTETSTR,	//password
+#	synaINT32,  	//auth_types
+#	synaINT32,  	//banned
+#	synaINT32,  	//initiatorId
+#	synaOCTETSTR};	//nickname
+#
+#   REP__VOLTAIRE_ITARGET_TABLE_LUNMASKS
+#int lunmaskEntrySyntaxList[]={
+#	synaINT32,	    //valid
+#	synaINT32,	    //initiatorId
+#	synaOCTETSTR,	//model
+#	synaOCTETSTR};	//serial
+	
+

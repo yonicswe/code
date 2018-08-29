@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ $# -gt 0 ] ; then  
+	revision="-r ${1}"	
+	
+	if [ `2>&1 cvs diff ${revision} | grep "no such tag" |wc -l` -gt 0 ] ; then 
+		echo No such Tag : ${1} 
+		exit 
+	fi
+	
+	echo diffing to TAG ${1}
+
+else
+	revision="-r HEAD"
+	echo diffing to HEAD 
+fi
+
+#x=$( 2>/dev/null cvs diff -bBw --brief |awk '/diff/{print $7}')
+x=$( 2>/dev/null cvs diff ${revision} -bBw --brief |awk '/Index:/{print $2}')
+count=1
+
+for i in ${x} ; do 
+#	filename=$(find . -name "$i"|sed 's/\.\///')  ; 
+#	echo "(${count}) ${filename}" 
+	echo "(${count}) ${i}"
+	
+	((count++)) ;
+	
+done

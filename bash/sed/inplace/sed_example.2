@@ -1,0 +1,6 @@
+sed -i file_to_work_with.txt -e '/YONI_START/,/YONI_END/s/hello/goodbye/g'  < file_to_work_with.txt
+
+
+# replace in-place line 4 of the file called 'data' the entire line with the string kaka 
+sed -i '4s/.*/kaka/' data 
+

@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Description : recreate links found on source directory 
+#               on destination directory.
+#
+#
+source_dir=$1
+target_dir=$2
+
+if ! [ -d $source_dir ] ; then 
+	return
+fi
+
+if ! [ -d $target_dir ] ; then 
+	return 
+fi
+
+source_dir=$(echo $source_dir | sed 's/\/$//g')
+target_dir=$(echo $target_dir | sed 's/\/$//g')
+
+for i in $(find $source_dir -type l) ; do 
+	link_name=${target_dir}$(echo $i | sed 's!'$source_dir'!!g')
+	link_tgt=$(	file $i | sed 's/.*to\ `//g' | cut -f1 -d"'"  )
+
+	echo "ln -snf $link_tgt $link_name"
+	ln -snf $link_tgt $link_name
+done           

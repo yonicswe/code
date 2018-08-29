@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function stop_lvm()
+{
+    declare il
+    for il in $(vgscan | grep active | cut -d ' ' -f 7)
+    do
+        il=$(eval echo ${il}) # get rid of nasty ""
+        echo_action "Deactivating volume group ${il}"
+        vgchange -a n ${il} > /dev/null
+    done
+
+}
+
+#-----Main------------------------
+
+stop_lvm
+grep 'Host' /proc/scsi/scsi|tr ':' ' '|sed 's/Host//g'|sed 's/scsi//g'|sed 's/Channel//g'|sed 's/Id//g'|sed 's/Lun//g' | while read entry
+do 
+	echo scsi remove-single-device ${entry} > /proc/scsi/scsi 
+done

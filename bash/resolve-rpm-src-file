@@ -1,0 +1,6 @@
+#!/bin/bash
+#rpm -qf /usr/bin/sg_map
+rpmfile=`rpm -qf $1` 
+#rpm -qi scsi-1.7_2.34_1.06_0.11-5|grep -i source|sed 's/.*Source/Source/'
+rpmsrc=$(rpm -qi ${rpmfile} | grep -i source|sed 's/.*Source/Source/')
+echo File: ${1} installed from ${rpmsrc}

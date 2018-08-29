@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# source function library
+. /etc/init.d/functions
+
+binary=/root/forever.sh
+pidfile=/var/run/forever.pid
+daemon --pidfile=$pidfile $binary

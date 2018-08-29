@@ -1,0 +1,19 @@
+#!/bin/bash
+
+
+# when using <<- instead of just << you delete all tabs 
+cat <<- EOF > HereDoc_tstFile_no_tabs
+#
+# This file is recreated by fix-ssh. The original file was moved to ${cf}.orig
+#
+Host *
+	Protocol 2,1
+EOF
+							
+cat << EOF > HereDoc_tstFile_with_tabs
+#
+# This file is recreated by fix-ssh. The original file was moved to ${cf}.orig
+#
+Host *
+	Protocol 2,1
+EOF

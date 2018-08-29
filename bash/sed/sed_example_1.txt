@@ -1,0 +1,24 @@
+ ip=$(cat /proc/cmdline | sed -e 's/.*\(ip=[^ \n]*\).*/\1/' | cut -d':' -f2
+
+        
+        replace file name but leave the extension the same
+
+ basename a/b/c.pcap | sed 's/\(.*\)\.\(.*$\)/\1_pdml.\2/g'
+                              ▲     ▲ ▲     ▲  ▲
+                              |     | |     |   ╲
+                              └⎯⎯┬⎯⎯┘ └⎯⎯┬⎯⎯┘    ╲
+                                 |       |       place hold area 1 
+                                 ╱       ╲         here
+                                ╱         ╲
+                               ╱           ╲
+                      save                 save       
+                      all chars            all chars 
+                      before the dot       before the dot
+                      to hold area 1       to hold area 2
+                                
+
+--------------------------------------------------------------------------------------------
+$ sed -e "s/\s\{3,\}/  /g" inputFile
+
+will substitute every sequence of at least 3 whitespaces with two spaces.
+                                

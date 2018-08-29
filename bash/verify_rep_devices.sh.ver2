@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# verify_rep_devices: make sure that ports of devices listed in the repository are actually active
+# and if not turn them off in the repository.
+
+# this is a possible location for a bug: if we increase the # of devs to a lot more then 256,
+# the list of devices may be to long for bash to hold. If so, we need to change that to ls | while read ...
+for i in /proc/voltaire/itarget/devices/[0-9]* ; do
+
+	cat ${i} | grep -qi "uninitialized"
+	ret=$?
+	if [ ${ret} -eq 0 ] ; then 
+#		echo ${i} is uninitialized
+		continue;
+	fi
+
+	eval $( tr '\n' ' ' < ${i}                 | \
+		sed -e 's/=/=\"/g'                   \
+		    -e 's/,/\" /g'                   \
+		    -e 's/$/\"/'                     \
+		    -e 's/ \[/=\"/g'                 \
+		    -e 's/\]: /\" /g')
+
+#	echo '$LUN'     is $LUN
+#	echo '$Host'    is $Host
+#	echo '$Channel' is $Channel
+#	echo '$ID'      is $ID
+#	echo '$MAP'     is $MAP
+
+	SPACED_MAP=$(echo ${MAP} | sed -e 's/./& /g') 
+
+	MAP_ARRAY=( ${SPACED_MAP} )
+
+#	cat ${i}
+#	echo with map ${MAP}
+
+	change_map=0
+	for (( count=0; count<${#MAP_ARRAY[*]}; count++)) ; do
+		opt=${MAP_ARRAY[${count}]}
+		
+		srch_path="/dev/scsi/host${count}/bus${Channel}/target${ID}/lun${LUN}/disc"
+
+		case ${opt} in
+			-)
+#				echo "no need to look for ${srch_str}"
+				;;
+			S|U|P)
+#				echo "look for ${srch_str}"
+				dd count=1 of=/dev/null if=${srch_path} 2>/dev/null
+				ret=$?
+				if [ ${ret} -ne 0 ] ; then 
+					# failed to read from device, need to update the new map to newdev
+					MAP_ARRAY[count]="-"
+					change_map=1
+				fi
+				;;
+		esac
+	done
+
+	if [ "${change_map}" = 1 ] ; then 
+		MAP=$(echo ${MAP_ARRAY[*]} | sed 's/ //g' )
+		echo "ID=${ID},Channel=${Channel},LUN=${LUN},WWPN=${WWPN},MAP=${MAP}" > /proc/voltaire/itarget/devices/newdev 	
+	fi
+done

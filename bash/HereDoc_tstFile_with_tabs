@@ -1,0 +1,5 @@
+#
+# This file is recreated by fix-ssh. The original file was moved to .orig
+#
+Host *
+	Protocol 2,1

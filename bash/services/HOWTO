@@ -1,0 +1,16 @@
+
+to execute a service in this example 
+i copied the file 'functions' from /etc/rc.d/init.d of my fedora 13 
+and used the function daemon from it.
+
+the run_forever script uses this function to run the script forever.sh 
+which forever touches the file 'x'
+
+after running 'run_forever' I can kill the shell and see how the process is still alive.
+from another shell of course.
+
+
+note. 
+   the files were produces on /root so 
+   to check how it runs 
+   thats why the binary variable is set to /root/...

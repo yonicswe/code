@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# != 1 ]; then
+echo "Usage:  $0 hostname"
+exit 1
+fi
+if [ ! -e /root/.ssh/id_dsa.pub ]
+then
+echo "/root/.ssh/id_dsa.pub doesn't exist. Run 'ssh-keygen -t dsa' first"
+exit 1
+fi
+cat ~/.ssh/id_dsa.pub | ssh $1  "cat >> ~/.ssh/authorized_keys"

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+	start=$(date "+%d %b %H:%M:%S")
+	count=1
+
+	for (( ; ; )) ; do 
+		now=$(date "+%d %b %H:%M:%S")
+		echo 
+		echo "----------------------------------------------------"
+		echo "iteration         start             now"
+		echo "   ${count}       ${start}       ${now}"
+		echo "----------------------------------------------------"
+		./lmddwr 1000	
+		./lmddrd 1000	
+		((count=count+1))
+		if [ ! -z ${1} ] ; then 
+			if (( count == ${1} )) ; then 
+				exit 
+			fi		
+		fi 
+	done
